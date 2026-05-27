@@ -1,32 +1,32 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Instagram, Twitter, Youtube, ArrowRight } from 'lucide-react'
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Instagram, Twitter, Youtube, ArrowRight } from "lucide-react";
 
 const FOOTER_LINKS = {
   boutique: [
-    { label: 'Nouveautés', href: '/boutique?sort=newest' },
-    { label: 'Bijoux', href: '/boutique?category=bijoux' },
-    { label: 'Montres', href: '/boutique?category=montres' },
-    { label: 'Maroquinerie', href: '/boutique?category=maroquinerie' },
-    { label: 'Soldes', href: '/boutique?sale=true' },
+    { label: "Nouveautés", href: "/boutique?sort=newest" },
+    { label: "Bijoux", href: "/boutique?category=bijoux" },
+    { label: "Montres", href: "/boutique?category=montres" },
+    { label: "Maroquinerie", href: "/boutique?category=maroquinerie" },
+    { label: "Soldes", href: "/boutique?sale=true" },
   ],
   aide: [
-    { label: 'Livraison & retours', href: '/livraison' },
-    { label: 'FAQ', href: '/faq' },
-    { label: 'Contact', href: '/contact' },
-    { label: 'Guide des tailles', href: '/guide-tailles' },
-    { label: 'Entretien', href: '/entretien' },
+    { label: "Livraison & retours", href: "/livraison" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Contact", href: "/contact" },
+    { label: "Guide des tailles", href: "/guide-tailles" },
+    { label: "Entretien", href: "/entretien" },
   ],
   marque: [
-    { label: 'Notre histoire', href: '/histoire' },
-    { label: 'Artisans', href: '/artisans' },
-    { label: 'Durabilité', href: '/durabilite' },
-    { label: 'Presse', href: '/presse' },
-    { label: 'Carrières', href: '/carrieres' },
+    { label: "Notre histoire", href: "/histoire" },
+    { label: "Artisans", href: "/artisans" },
+    { label: "Durabilité", href: "/durabilite" },
+    { label: "Presse", href: "/presse" },
+    { label: "Carrières", href: "/carrieres" },
   ],
-}
+};
 
 export function Footer() {
   return (
@@ -42,7 +42,8 @@ export function Footer() {
               L'excellence, <em className="italic">en avant-première</em>
             </h2>
             <p className="text-muted-foreground text-sm mb-8">
-              Recevez nos nouvelles collections, offres exclusives et invitations privées.
+              Recevez nos nouvelles collections, offres exclusives et
+              invitations privées.
             </p>
             <form
               className="flex gap-3 max-w-md mx-auto"
@@ -75,13 +76,14 @@ export function Footer() {
               LUMIÈRE
             </span>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Maison de création française fondée en 2018. L'excellence artisanale au service de l'élégance contemporaine, depuis Paris.
+              Maison de création française fondée en 2018. L'excellence
+              artisanale au service de l'élégance contemporaine, depuis Paris.
             </p>
             <div className="flex gap-3 mt-6">
               {[
-                { Icon: Instagram, href: '#' },
-                { Icon: Twitter, href: '#' },
-                { Icon: Youtube, href: '#' },
+                { Icon: Instagram, href: "#" },
+                { Icon: Twitter, href: "#" },
+                { Icon: Youtube, href: "#" },
               ].map(({ Icon, href }, i) => (
                 <motion.a
                   key={i}
@@ -124,19 +126,21 @@ export function Footer() {
             © {new Date().getFullYear()} LUMIÈRE — Tous droits réservés
           </p>
           <div className="flex gap-6">
-            {['Confidentialité', 'CGV', 'Mentions légales', 'Cookies'].map((item) => (
-              <Link
-                key={item}
-                href="#"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {item}
-              </Link>
-            ))}
+            {["Confidentialité", "CGV", "Mentions légales", "Cookies"].map(
+              (item) => (
+                <Link
+                  key={item}
+                  href="#"
+                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {item}
+                </Link>
+              ),
+            )}
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span>Paiements sécurisés</span>
-            {['Visa', 'MC', 'AMEX', 'PayPal'].map((p) => (
+            {["Visa", "MC", "AMEX", "PayPal"].map((p) => (
               <span
                 key={p}
                 className="px-2 py-0.5 rounded border border-border text-[10px] font-mono"
@@ -148,5 +152,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }
