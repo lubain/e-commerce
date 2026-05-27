@@ -1,67 +1,85 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Search, ShoppingBag, Heart, User, Menu, X,
-  ChevronDown, Sun, Moon
-} from 'lucide-react'
-import { useTheme } from 'next-themes'
-import { useCartStore } from '@/store/cart.store'
-import { useWishlistStore } from '@/store/wishlist.store'
-import { cn } from '@/utils'
-import { CartDrawer } from '@/components/cart/CartDrawer'
-import { SearchModal } from '@/components/shop/SearchModal'
+  Search,
+  ShoppingBag,
+  Heart,
+  User,
+  Menu,
+  X,
+  ChevronDown,
+  Sun,
+  Moon,
+  LogOut,
+} from "lucide-react";
+import { useTheme } from "next-themes";
+import { useSession, signOut } from "next-auth/react";
+import { useCartStore } from "@/store/cart.store";
+import { useWishlistStore } from "@/store/wishlist.store";
+import { cn } from "@/utils";
+import { CartDrawer } from "@/components/cart/CartDrawer";
+import { SearchModal } from "@/components/shop/SearchModal";
 
 const NAV_LINKS = [
-  { label: 'Accueil', href: '/' },
-  { label: 'Boutique', href: '/boutique' },
+  { label: "Accueil", href: "/" },
+  { label: "Boutique", href: "/boutique" },
   {
-    label: 'Collections',
-    href: '#',
+    label: "Collections",
+    href: "#",
     children: [
-      { label: 'Bijoux', href: '/boutique?category=bijoux' },
-      { label: 'Montres', href: '/boutique?category=montres' },
-      { label: 'Maroquinerie', href: '/boutique?category=maroquinerie' },
-      { label: 'Mode', href: '/boutique?category=mode' },
+      { label: "Bijoux", href: "/boutique?category=bijoux" },
+      { label: "Montres", href: "/boutique?category=montres" },
+      { label: "Maroquinerie", href: "/boutique?category=maroquinerie" },
+      { label: "Mode", href: "/boutique?category=mode" },
     ],
   },
-  { label: 'Nouveautés', href: '/boutique?sort=newest' },
-  { label: 'Soldes', href: '/boutique?sale=true' },
-]
+  { label: "Nouveautés", href: "/boutique?sort=newest" },
+  { label: "Soldes", href: "/boutique?sale=true" },
+];
 
 export function Navbar() {
-  const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [cartOpen, setCartOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const pathname = usePathname();
+  const router = useRouter();
+  const { theme, setTheme } = useTheme();
+  const { data: session } = useSession();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const itemCount = useCartStore((s) => s.getItemCount())
-  const wishlistCount = useWishlistStore((s) => s.items.length)
-
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  const itemCount = useCartStore((s) => s.getItemCount());
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   useEffect(() => {
-    setMobileOpen(false)
-  }, [pathname])
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push("/");
+    router.refresh();
+  };
 
   return (
     <>
       <motion.header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
           scrolled
-            ? 'bg-background/90 backdrop-blur-xl border-b border-border/50 shadow-sm'
-            : 'bg-transparent'
+            ? "bg-background/90 backdrop-blur-xl border-b border-border/50 shadow-sm"
+            : "bg-transparent",
         )}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -69,7 +87,7 @@ export function Navbar() {
       >
         <nav className="container mx-auto flex items-center justify-between h-16 px-4 md:px-6">
           {/* Logo */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/">
             <motion.span
               className="font-serif text-2xl font-light tracking-[0.15em] text-[var(--gold)] select-none"
               whileHover={{ opacity: 0.8 }}
@@ -88,14 +106,10 @@ export function Navbar() {
                   onMouseEnter={() => setActiveDropdown(link.label)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  <button className={cn(
-                    'flex items-center gap-1 text-sm font-medium tracking-wide transition-colors',
-                    'text-muted-foreground hover:text-foreground uppercase',
-                  )}>
+                  <button className="flex items-center gap-1 text-sm font-medium tracking-wide transition-colors text-muted-foreground hover:text-foreground uppercase">
                     {link.label}
                     <ChevronDown className="w-3 h-3" />
                   </button>
-
                   <AnimatePresence>
                     {activeDropdown === link.label && (
                       <motion.div
@@ -123,15 +137,15 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'text-sm font-medium tracking-wide uppercase transition-colors',
+                    "text-sm font-medium tracking-wide uppercase transition-colors",
                     pathname === link.href
-                      ? 'text-foreground'
-                      : 'text-muted-foreground hover:text-foreground'
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {link.label}
                 </Link>
-              )
+              ),
             )}
           </div>
 
@@ -150,9 +164,13 @@ export function Navbar() {
             <motion.button
               className="w-9 h-9 hidden md:flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
               whileTap={{ scale: 0.95 }}
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4" />
+              ) : (
+                <Moon className="w-4 h-4" />
+              )}
             </motion.button>
 
             {/* Wishlist */}
@@ -190,21 +208,95 @@ export function Navbar() {
                     exit={{ scale: 0 }}
                     className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[var(--gold)] text-[9px] font-bold text-background rounded-full flex items-center justify-center"
                   >
-                    {itemCount > 9 ? '9+' : itemCount}
+                    {itemCount > 9 ? "9+" : itemCount}
                   </motion.span>
                 )}
               </AnimatePresence>
             </motion.button>
 
-            {/* Account */}
-            <Link href="/auth/login">
-              <motion.div
-                className="w-9 h-9 hidden md:flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
-                whileTap={{ scale: 0.95 }}
-              >
-                <User className="w-[18px] h-[18px]" />
-              </motion.div>
-            </Link>
+            {/* Account — shows avatar if logged in */}
+            <div className="hidden md:block relative">
+              {session ? (
+                <div>
+                  <motion.button
+                    className="w-9 h-9 flex items-center justify-center rounded-full overflow-hidden border-2 border-[var(--gold)]/40 hover:border-[var(--gold)] transition-colors"
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  >
+                    {session.user?.image ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={session.user.image}
+                        alt={session.user.name ?? "Avatar"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-[11px] font-bold text-[var(--gold)]">
+                        {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
+                      </span>
+                    )}
+                  </motion.button>
+
+                  <AnimatePresence>
+                    {userMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 top-full mt-2 w-56 glass rounded-2xl overflow-hidden shadow-premium py-2"
+                        onMouseLeave={() => setUserMenuOpen(false)}
+                      >
+                        <div className="px-4 py-3 border-b border-border/50">
+                          <p className="text-sm font-medium truncate">
+                            {session.user?.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {session.user?.email}
+                          </p>
+                        </div>
+                        {[
+                          { label: "Mon dashboard", href: "/dashboard" },
+                          {
+                            label: "Mes commandes",
+                            href: "/dashboard/commandes",
+                          },
+                          { label: "Ma wishlist", href: "/dashboard/wishlist" },
+                          { label: "Mon profil", href: "/dashboard/profil" },
+                        ].map((item) => (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                            onClick={() => setUserMenuOpen(false)}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                        <div className="border-t border-border/50 mt-1 pt-1">
+                          <button
+                            onClick={handleSignOut}
+                            className="w-full text-left px-4 py-2.5 text-sm text-red-400 hover:bg-red-500/10 transition-colors flex items-center gap-2"
+                          >
+                            <LogOut className="w-3.5 h-3.5" />
+                            Se déconnecter
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <Link href="/auth/login">
+                  <motion.div
+                    className="w-9 h-9 flex items-center justify-center rounded-full text-muted-foreground hover:text-foreground hover:bg-white/5 transition-colors"
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <User className="w-[18px] h-[18px]" />
+                  </motion.div>
+                </Link>
+              )}
+            </div>
 
             {/* Mobile menu toggle */}
             <motion.button
@@ -212,7 +304,11 @@ export function Navbar() {
               whileTap={{ scale: 0.95 }}
               onClick={() => setMobileOpen(!mobileOpen)}
             >
-              {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </motion.button>
           </div>
         </nav>
@@ -222,7 +318,7 @@ export function Navbar() {
           {mobileOpen && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
+              animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="lg:hidden border-t border-border/50 bg-background/95 backdrop-blur-xl overflow-hidden"
@@ -254,10 +350,10 @@ export function Navbar() {
                       <Link
                         href={link.href}
                         className={cn(
-                          'block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors',
+                          "block px-3 py-2.5 text-sm font-medium rounded-lg transition-colors",
                           pathname === link.href
-                            ? 'text-foreground bg-white/5'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
+                            ? "text-foreground bg-white/5"
+                            : "text-muted-foreground hover:text-foreground hover:bg-white/5",
                         )}
                       >
                         {link.label}
@@ -266,12 +362,32 @@ export function Navbar() {
                   </motion.div>
                 ))}
                 <div className="mt-4 pt-4 border-t border-border/50 flex flex-col gap-2">
-                  <Link href="/auth/login" className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground">
-                    <User className="w-4 h-4" /> Mon compte
-                  </Link>
-                  <Link href="/dashboard/wishlist" className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground">
-                    <Heart className="w-4 h-4" /> Wishlist ({wishlistCount})
-                  </Link>
+                  {session ? (
+                    <>
+                      <div className="px-3 py-2 text-sm font-medium">
+                        {session.user?.name}
+                      </div>
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground"
+                      >
+                        Mon dashboard
+                      </Link>
+                      <button
+                        onClick={handleSignOut}
+                        className="flex items-center gap-2 px-3 py-2.5 text-sm text-red-400 text-left"
+                      >
+                        <LogOut className="w-4 h-4" /> Se déconnecter
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      href="/auth/login"
+                      className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      <User className="w-4 h-4" /> Se connecter
+                    </Link>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -279,11 +395,8 @@ export function Navbar() {
         </AnimatePresence>
       </motion.header>
 
-      {/* Cart Drawer */}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
-
-      {/* Search Modal */}
       <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
-  )
+  );
 }
