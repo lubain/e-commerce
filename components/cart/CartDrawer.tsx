@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { motion, AnimatePresence } from 'framer-motion'
-import Link from 'next/link'
-import Image from 'next/image'
-import { X, ShoppingBag, Minus, Plus, Trash2, ArrowRight } from 'lucide-react'
-import { useCartStore } from '@/store/cart.store'
-import { formatPrice, cn } from '@/utils'
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
+import { X, ShoppingBag, Minus, Plus, Trash2, ArrowRight } from "lucide-react";
+import { useCartStore } from "@/store/cart.store";
+import { formatPrice, cn } from "@/utils";
 
 interface CartDrawerProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
-  const items = useCartStore((s) => s.items)
-  const updateQuantity = useCartStore((s) => s.updateQuantity)
-  const removeItem = useCartStore((s) => s.removeItem)
-  const subtotal = useCartStore((s) => s.getSubtotal())
-  const shipping = useCartStore((s) => s.getShipping())
-  const total = useCartStore((s) => s.getTotal())
+  const items = useCartStore((s) => s.items);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const subtotal = useCartStore((s) => s.getSubtotal());
+  const shipping = useCartStore((s) => s.getShipping());
+  const total = useCartStore((s) => s.getTotal());
 
   return (
     <>
@@ -40,10 +40,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         {open && (
           <motion.div
             className="fixed top-0 right-0 bottom-0 w-full max-w-md z-50 bg-background border-l border-border flex flex-col"
-            initial={{ x: '100%' }}
+            initial={{ x: "100%" }}
             animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-border">
@@ -54,7 +54,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 </h2>
                 {items.length > 0 && (
                   <span className="text-sm text-muted-foreground">
-                    ({items.length} article{items.length > 1 ? 's' : ''})
+                    ({items.length} article{items.length > 1 ? "s" : ""})
                   </span>
                 )}
               </div>
@@ -114,7 +114,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                       <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
                         {item.product.category.name}
                       </p>
-                      <p className="text-sm font-medium truncate">{item.product.name}</p>
+                      <p className="text-sm font-medium truncate">
+                        {item.product.name}
+                      </p>
                       {item.variant && (
                         <p className="text-xs text-muted-foreground mt-0.5">
                           {item.variant.name}: {item.variant.value}
@@ -125,7 +127,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                         <div className="flex items-center gap-2">
                           <button
                             className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity - 1)
+                            }
                           >
                             <Minus className="w-3 h-3" />
                           </button>
@@ -134,7 +138,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                           </span>
                           <button
                             className="w-6 h-6 rounded-full border border-border flex items-center justify-center hover:border-[var(--gold)] hover:text-[var(--gold)] transition-colors"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -166,13 +172,20 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
                 </div>
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>Livraison</span>
-                  <span className={cn('font-mono', shipping === 0 && 'text-emerald-400')}>
-                    {shipping === 0 ? 'Gratuite' : formatPrice(shipping)}
+                  <span
+                    className={cn(
+                      "font-mono",
+                      shipping === 0 && "text-emerald-400",
+                    )}
+                  >
+                    {shipping === 0 ? "Gratuite" : formatPrice(shipping)}
                   </span>
                 </div>
                 <div className="flex justify-between font-medium pt-2 border-t border-border">
                   <span>Total TTC</span>
-                  <span className="font-mono text-lg">{formatPrice(total)}</span>
+                  <span className="font-mono text-lg">
+                    {formatPrice(total)}
+                  </span>
                 </div>
 
                 <div className="space-y-2 pt-2">
@@ -194,10 +207,10 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
 
                 {subtotal < 300 && (
                   <p className="text-center text-xs text-muted-foreground">
-                    Plus que{' '}
+                    Plus que{" "}
                     <span className="text-[var(--gold)] font-medium">
                       {formatPrice(300 - subtotal)}
-                    </span>{' '}
+                    </span>{" "}
                     pour la livraison gratuite
                   </p>
                 )}
@@ -207,5 +220,5 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }

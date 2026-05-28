@@ -1,55 +1,59 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Heart, ShoppingBag, Star, Eye } from 'lucide-react'
-import { toast } from 'sonner'
-import type { Product } from '@/types'
-import { useCartStore } from '@/store/cart.store'
-import { useWishlistStore } from '@/store/wishlist.store'
-import { formatPrice, calculateDiscount, cn } from '@/utils'
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, ShoppingBag, Star, Eye } from "lucide-react";
+import { toast } from "sonner";
+import type { Product } from "@/types";
+import { useCartStore } from "@/store/cart.store";
+import { useWishlistStore } from "@/store/wishlist.store";
+import { formatPrice, calculateDiscount, cn } from "@/utils";
 
 interface ProductCardProps {
-  product: Product
-  index?: number
+  product: Product;
+  index?: number;
 }
 
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-  const [imgIdx, setImgIdx] = useState(0)
-  const addItem = useCartStore((s) => s.addItem)
-  const toggleItem = useWishlistStore((s) => s.toggleItem)
-  const isInWishlist = useWishlistStore((s) => s.isInWishlist(product.id))
+  const [isHovered, setIsHovered] = useState(false);
+  const [imgIdx, setImgIdx] = useState(0);
+  const addItem = useCartStore((s) => s.addItem);
+  const toggleItem = useWishlistStore((s) => s.toggleItem);
+  const isInWishlist = useWishlistStore((s) => s.isInWishlist(product.id));
 
   const discount = product.compareAtPrice
     ? calculateDiscount(product.price, product.compareAtPrice)
-    : 0
+    : 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    addItem(product)
-    toast.success('Ajouté au panier', {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(product);
+    toast.success("Ajouté au panier", {
       description: product.name,
-    })
-  }
+    });
+  };
 
   const handleWishlist = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    const added = toggleItem(product)
-    toast(added ? '❤️ Ajouté à la wishlist' : '🤍 Retiré de la wishlist', {
+    e.preventDefault();
+    e.stopPropagation();
+    const added = toggleItem(product);
+    toast(added ? "❤️ Ajouté à la wishlist" : "🤍 Retiré de la wishlist", {
       description: product.name,
-    })
-  }
+    });
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.4,
+        delay: index * 0.05,
+        ease: [0.22, 1, 0.36, 1],
+      }}
     >
       <Link href={`/produit/${product.slug}`}>
         <div
@@ -65,8 +69,8 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                 alt={product.images[0].alt}
                 fill
                 className={cn(
-                  'object-cover transition-transform duration-700',
-                  isHovered ? 'scale-105' : 'scale-100'
+                  "object-cover transition-transform duration-700",
+                  isHovered ? "scale-105" : "scale-100",
                 )}
                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
               />
@@ -107,21 +111,32 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             <div className="absolute top-3 right-3 flex flex-col gap-2">
               <motion.button
                 className={cn(
-                  'w-8 h-8 rounded-full glass border border-white/10 flex items-center justify-center transition-all',
-                  isInWishlist ? 'text-red-400' : 'text-white/70 hover:text-red-400'
+                  "w-8 h-8 rounded-full glass border border-white/10 flex items-center justify-center transition-all",
+                  isInWishlist
+                    ? "text-red-400"
+                    : "text-white/70 hover:text-red-400",
                 )}
                 onClick={handleWishlist}
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0, x: 10 }}
-                animate={isHovered ? { opacity: 1, x: 0 } : { opacity: isInWishlist ? 1 : 0, x: 10 }}
+                animate={
+                  isHovered
+                    ? { opacity: 1, x: 0 }
+                    : { opacity: isInWishlist ? 1 : 0, x: 10 }
+                }
                 transition={{ duration: 0.15 }}
               >
-                <Heart className="w-3.5 h-3.5" fill={isInWishlist ? 'currentColor' : 'none'} />
+                <Heart
+                  className="w-3.5 h-3.5"
+                  fill={isInWishlist ? "currentColor" : "none"}
+                />
               </motion.button>
 
               <motion.div
                 initial={{ opacity: 0, x: 10 }}
-                animate={isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
+                animate={
+                  isHovered ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }
+                }
                 transition={{ duration: 0.15, delay: 0.04 }}
               >
                 <Link href={`/produit/${product.slug}`}>
@@ -139,10 +154,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   <button
                     key={i}
                     className={cn(
-                      'w-1.5 h-1.5 rounded-full transition-all',
-                      i === imgIdx ? 'bg-white w-4' : 'bg-white/50'
+                      "w-1.5 h-1.5 rounded-full transition-all",
+                      i === imgIdx ? "bg-white w-4" : "bg-white/50",
                     )}
-                    onClick={(e) => { e.preventDefault(); setImgIdx(i) }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setImgIdx(i);
+                    }}
                   />
                 ))}
               </div>
@@ -165,10 +183,10 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
                   <Star
                     key={star}
                     className={cn(
-                      'w-3 h-3',
+                      "w-3 h-3",
                       star <= Math.round(product.rating)
-                        ? 'text-[var(--gold)] fill-[var(--gold)]'
-                        : 'text-muted-foreground'
+                        ? "text-[var(--gold)] fill-[var(--gold)]"
+                        : "text-muted-foreground",
                     )}
                   />
                 ))}
@@ -193,9 +211,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
 
               <motion.button
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
-                  'border border-border hover:border-[var(--gold)] hover:bg-[var(--gold)] hover:text-background',
-                  'text-muted-foreground'
+                  "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
+                  "border border-border hover:border-[var(--gold)] hover:bg-[var(--gold)] hover:text-background",
+                  "text-muted-foreground",
                 )}
                 onClick={handleAddToCart}
                 whileTap={{ scale: 0.95 }}
@@ -208,5 +226,5 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
       </Link>
     </motion.div>
-  )
+  );
 }
